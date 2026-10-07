@@ -28,7 +28,7 @@ jobs:
       - name: Build Docker Image
         # We tag it with the Commit SHA (for precise versioning) AND 'latest'
         run: |
-          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/sample-ml-workflow
+          IMAGE_ID=${{ vars.DOCKER_LOGIN }}/sample-ml-workflow
           
           docker build -t $IMAGE_ID:${{ github.sha }} .
           docker tag $IMAGE_ID:${{ github.sha }} $IMAGE_ID:latest
@@ -37,7 +37,7 @@ jobs:
         # We test the EXACT image we just built. 
         # If this fails, we never push to Docker Hub.
         run: |
-          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/sample-ml-workflow
+          IMAGE_ID=${{ vars.DOCKER_LOGIN }}/sample-ml-workflow
           
           docker run --rm \
             -e MLFLOW_TRACKING_URI="file:///tmp/mlruns" \
@@ -48,7 +48,7 @@ jobs:
         # Only push if tests passed AND we are on the main branch
         if: github.ref == 'refs/heads/main'
         run: |
-          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/sample-ml-workflow
+          IMAGE_ID=${{ vars.DOCKER_LOGIN }}/sample-ml-workflow
           
           docker push $IMAGE_ID:${{ github.sha }}
           docker push $IMAGE_ID:latest
